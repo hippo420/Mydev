@@ -1,4 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?><FDL version="2.1"><Form {formInfo}>{layouts}{objects}<Script type ="xscript5.1"><![CDATA[/**
+<?xml version="1.0" encoding="utf-8"?><FDL version="2.1"><Form {formInfo}>{layouts}<Objects><Dataset id = "dstCond1" > 
+<ColumnInfo><Column id="PRD_CD" type="STRING" size="256"/><Column id="PRD_NM" type="STRING" size="256"/><Column id="CURR_CD" type="STRING" size="256"/><Column id="CURR_NM" type="STRING" size="256"/><Column id="FUND_TYCD_NM" type="STRING" size="256"/><Column id="FUND_TYCD" type="STRING" size="256"/><Column id="FUND" type="STRING" size="256"/><Column id="FUND_NM" type="STRING" size="256"/><Column id="NEWYMD" type="STRING" size="256"/><Column id="MTYYMD" type="STRING" size="256"/><Column id="FUND_STS" type="STRING" size="256"/><Column id="TERMIN_YMD" type="STRING" size="256"/><Column id="CUST_BR" type="STRING" size="256"/><Column id="ACCT_NO" type="STRING" size="256"/><Column id="RSRV_MTHD_TYCD" type="STRING" size="256"/></ColumnInfo><Rows><Row/></Rows> 
+</Dataset>
+<Dataset id = "dstList1" > 
+<ColumnInfo><Column id="FUND" type="STRING" size="256"/><Column id="ACCT_NO" type="STRING" size="256"/><Column id="IMC" type="STRING" size="256"/><Column id="CUST_YMD" type="STRING" size="256"/><Column id="MTYYMD" type="STRING" size="256"/><Column id="TERMIN_YMD" type="STRING" size="256"/><Column id="CUST_BLNC" type="STRING" size="256"/><Column id="CURR_CD" type="STRING" size="256"/><Column id="PRD_CD" type="STRING" size="256"/><Column id="OPROFIT_YN" type="STRING" size="256"/><Column id="BR" type="STRING" size="256"/><Column id="PROC_BR" type="STRING" size="256"/><Column id="CPRN_BEN_CLNT" type="STRING" size="256"/><Column id="PROFIT_BEN_CLNT" type="STRING" size="256"/><Column id="RSRV_MTHD" type="STRING" size="256"/><Column id="PROFIT_PAY_MTHD" type="STRING" size="256"/><Column id="MLT_ASSET_YN" type="STRING" size="256"/><Column id="TXN_CD" type="STRING" size="256"/><Column id="FUND_STS" type="STRING" size="256"/><Column id="PROFIT_PAY_YMD" type="STRING" size="256"/><Column id="BFTAKE_BEF_TR_AMT" type="STRING" size="256"/><Column id="BFTAKE_FEE_AMT" type="STRING" size="256"/><Column id="BFTAKE_FEE_RATE" type="STRING" size="256"/><Column id="AUTO_OUT_PROPS_YN" type="STRING" size="256"/><Column id="CORE_PRD_CD" type="STRING" size="256"/><Column id="LAST_CHG_DM" type="STRING" size="256"/><Column id="LAST_CHG_ID" type="STRING" size="256"/></ColumnInfo> 
+</Dataset>
+<Dataset id = "dstCURR_CD" > 
+<ColumnInfo><Column id="CD" type="STRING" size="256"/><Column id="NM" type="STRING" size="256"/></ColumnInfo> 
+</Dataset>
+<Dataset id = "dstFUND_TYCD" > 
+<ColumnInfo><Column id="CD" type="STRING" size="256"/><Column id="NM" type="STRING" size="256"/></ColumnInfo> 
+</Dataset>
+<Dataset id = "dstPRD_CD" > 
+<ColumnInfo><Column id="CD" type="STRING" size="256"/><Column id="NM" type="STRING" size="256"/></ColumnInfo> 
+</Dataset>
+<Dataset id = "dstFUND_STS" > 
+<ColumnInfo><Column id="CD" type="STRING" size="256"/><Column id="NM" type="STRING" size="256"/><Column id="ORG_NM" type="STRING" size="256"/></ColumnInfo> 
+</Dataset>
+</Objects><Script type ="xscript5.1"><![CDATA[/**
 *  특정금전신탁펀드 관리(3113)
 *  @MenuPath	신탁상품 > 신탁상품공통
 *  @FileName	TmSpcMnyTrustFundMgr_man01.xfdl

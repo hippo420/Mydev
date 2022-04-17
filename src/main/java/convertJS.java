@@ -6,21 +6,27 @@ import java.util.Stack;
 
 public class convertJS {
 
+
+
     public static void main(String[] args) throws IOException
     {
         System.out.println(System.getProperty("user.dir"));
+        List<Metadata> metadata = new ArrayList<Metadata>();
 
         try(FileReader fileReader = new FileReader("/Users/gaebabja/IdeaProjects/Mydev/src/main/resources/JS/test.txt"))
         {
             List<String> Data= makeData(fileReader);
 
             //fileReader.close();
-            extractKeyData(Data);
+            metadata= extractKeyData(Data);
+            String strdata = makeStr1(metadata.get(0).datasets,"D");
+            String scode = makeStr(metadata.get(0).codes);
+            log(strdata);
             fileReader.close();
             List<String> outputs = new ArrayList<String>();
 
             //TODO Converting JS TO XFDL
-            outputs=convertJSToXDFL(Data, extractCode(Data));
+            outputs=convertJSToXDFL(scode,strdata);
 
             //파일쓰기
             File file = new File("/Users/gaebabja/IdeaProjects/Mydev/src/main/resources/XFDL/result.xfdl.js");
@@ -62,8 +68,9 @@ public class convertJS {
     {
         System.out.println(str);
     }
-    private static List<String> convertJSToXDFL(List<String> data,List<String> code) throws IOException{
+    private static List<String> convertJSToXDFL(String sc, String ds) throws IOException{
         List<String> results =new ArrayList<String>();
+
         log("convertJSToXDFL");
         try(
         FileReader fileReader = new FileReader("/Users/gaebabja/IdeaProjects/Mydev/src/main/resources/xfdlMacro/xfdlmcro.txt");
@@ -80,10 +87,16 @@ public class convertJS {
                 if(results.get(i).indexOf("{userScripts}")>=0)
                 {
                     results.remove(i);
-                    results.add(i,makeStr(code));
+                    results.add(i,sc);
+                }
+                if(results.get(i).indexOf("{objects}")>=0)
+                {
+                    results.remove(i);
+                    results.add(i,ds);
                 }
 
-                    log(results.get(i));
+
+                 // log(results.get(i));
             }
         }
         catch(Exception e)
@@ -92,6 +105,8 @@ public class convertJS {
         }
         return  results;
     }
+
+
     public static String makeStr(List<String> data)
     {
         String str="";
@@ -100,6 +115,33 @@ public class convertJS {
             str+= data.get(i)+'\n';
         }
         return  str;
+    }
+
+    public  static  String makeStr1(List<Dataset> data, String type)
+    {
+        String str="";
+        switch (type)
+        {
+            case "D":
+                String name="", event="", info="";
+
+
+                System.out.println(data.size());
+                for(int i=0;i<data.size();i++)
+                {
+                    name = data.get(i).name;
+                    info = data.get(i).colInfo;
+                    String tempdata="<Dataset id = "+'"'+name+'"'+" "+event+"> \n" +info+" \n</Dataset>";
+                    str+=tempdata.replace("\\","");
+                    str+="\n";
+                }
+
+                break;
+            case "C":
+
+                break;
+        }
+        return str;
     }
     public static void extractEventData(List<String> data)
     {
@@ -121,8 +163,9 @@ public class convertJS {
         }
     }
 
-    public static void extractKeyData(List<String> data)
+    public static List<Metadata> extractKeyData(List<String> data)
     {
+        List<Metadata> md = new ArrayList<Metadata>();
         System.out.println("실행..."+data.size());
         List<Dataset> datasetList = new ArrayList<Dataset>();
         List<Comp> compList=new ArrayList<Comp>();
@@ -206,9 +249,9 @@ public class convertJS {
 
         }
 
-        List<String> keydata = new ArrayList<>();
+        md.add(new Metadata(datasetList,compList,eventInfoList,sourcecode));
 
-
+    return  md;
 
 
     }
