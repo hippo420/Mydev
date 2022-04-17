@@ -2,6 +2,7 @@ import java.io.*;
 import java.lang.module.FindException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class convertJS {
 
@@ -16,10 +17,12 @@ public class convertJS {
             //fileReader.close();
             extractKeyData(Data);
             fileReader.close();
-            List<String> output = new ArrayList<>();
+            List<String> outputs = new ArrayList<String>();
 
             //TODO Converting JS TO XFDL
+            outputs=convertJSToXDFL(Data, extractCode(Data));
 
+            //파일쓰기
             File file = new File("/Users/gaebabja/IdeaProjects/Mydev/src/main/resources/XFDL/result.xfdl.js");
             if(!file.exists())
             {
@@ -30,14 +33,14 @@ public class convertJS {
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
             String strCode ="";
-            for(int i=0;i< output.size();i++)
+            for(int i=0;i< outputs.size();i++)
             {
-                strCode+= output.get(i);
+                strCode+= outputs.get(i);
             }
             bufferedWriter.write(strCode);
 
             bufferedWriter.close();
-            fileWriter.close();
+//            fileWriter.close();
         }
         catch(Exception e)
         {
@@ -48,7 +51,56 @@ public class convertJS {
         }
 
     }
+    public static List<String> readFile(String path)
+    {
+        List<String> stringList = new ArrayList<String>();
 
+        return stringList;
+
+    }
+    public static void log(String str)
+    {
+        System.out.println(str);
+    }
+    private static List<String> convertJSToXDFL(List<String> data,List<String> code) throws IOException{
+        List<String> results =new ArrayList<String>();
+        log("convertJSToXDFL");
+        try(
+        FileReader fileReader = new FileReader("/Users/gaebabja/IdeaProjects/Mydev/src/main/resources/xfdlMacro/xfdlmcro.txt");
+        )
+        {
+            //script
+            //List<String> str1 =new ArrayList<String>();
+            results = makeData(fileReader);
+            fileReader.close();
+
+            for(int i=0;i<results.size();i++)
+            {
+                //insert userscript into xdflmacro
+                if(results.get(i).indexOf("{userScripts}")>=0)
+                {
+                    results.remove(i);
+                    results.add(i,makeStr(code));
+                }
+
+                    log(results.get(i));
+            }
+        }
+        catch(Exception e)
+        {
+            System.out.println("매크로 에러");
+        }
+        return  results;
+    }
+    public static String makeStr(List<String> data)
+    {
+        String str="";
+        for(int i =0;i< data.size();i++)
+        {
+            str+= data.get(i)+'\n';
+        }
+        return  str;
+    }
     public static void extractEventData(List<String> data)
     {
         List<EventInfo> eventInfoList = new ArrayList<EventInfo>();
@@ -62,7 +114,7 @@ public class convertJS {
                 compname = data.get(i).substring(0,data.get(i).indexOf("addEventHandler")-1);
                 eventtype=data.get(i).substring(data.get(i).indexOf('"')+1,data.get(i).lastIndexOf('"'));
                 eventname=data.get(i).substring(data.get(i).indexOf(",this.")+6,data.get(i).lastIndexOf(','));
-                System.out.println(compname+", "+eventtype+", "+eventname);
+                //System.out.println(compname+", "+eventtype+", "+eventname);
                 eventInfoList.add(new EventInfo(compname,eventtype,eventname));
             }
 
@@ -82,6 +134,7 @@ public class convertJS {
         int codeidx=0;
         for(int i=0;i<data.size();i++)
         {
+
             if(data.get(i).indexOf(keyword)>=0)
             {
                 //데이터셋정보
@@ -103,6 +156,7 @@ public class convertJS {
                 {
                     int idx=1;
                     int j=i;
+                    if(j==data.size()) break;
                     String compname;
                     String name;
                     String info="";
@@ -126,10 +180,13 @@ public class convertJS {
                             //System.out.println(key+" "+value);
                             info+=" "+key+"="+value;
                         }
-                        if (data.get(j).indexOf("addChild") >= 0&&data.get(j).indexOf("addChild")>4) {
+                        if ((data.get(j).indexOf("addChild") >= 0&&data.get(j).indexOf("addChild")>4)
+                        ||(data.get(j).indexOf("addLayout") >= 0&&data.get(j).indexOf("addLayout")>4)) {
 
-
-                            parents = data.get(j).substring(0, data.get(j).indexOf(".addChild"));
+                            if(data.get(j).indexOf("addChild") >= 0)
+                                parents = data.get(j).substring(0, data.get(j).indexOf(".addChild"));
+                            else
+                                parents = data.get(j).substring(0, data.get(j).indexOf(".addLayout"));
                             parents.replace(" ","" );
 
                             break;
@@ -175,6 +232,7 @@ public class convertJS {
         }
         return sc;
     }
+
     public static List<String> makeData(FileReader fileReader) throws IOException
     {
         List<String> lines = new ArrayList<>();
