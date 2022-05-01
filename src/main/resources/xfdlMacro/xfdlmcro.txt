@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FDL version="2.1">
-    <Form {formInfo}>
-    {layouts}
+    <Form {forminfo}>
+    <Layouts>
+        <Layout {layinfo}>
+            {layouts}
+        </Layout>
+    </Layouts>
         <Objects>
             {objects}
         </Objects>

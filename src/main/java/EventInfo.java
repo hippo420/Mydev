@@ -1,8 +1,8 @@
 public class EventInfo {
 
     public String compname;
-    public String eventtype;
     public String eventname;
+    public String eventtype;
 
     public String getCompname() {
         return compname;
@@ -12,13 +12,6 @@ public class EventInfo {
         this.compname = compname;
     }
 
-    public String getEventtype() {
-        return eventtype;
-    }
-
-    public void setEventtype(String eventtype) {
-        this.eventtype = eventtype;
-    }
 
     public String getEventname() {
         return eventname;
@@ -26,6 +19,14 @@ public class EventInfo {
 
     public void setEventname(String eventname) {
         this.eventname = eventname;
+    }
+
+    public String getEventtype() {
+        return eventtype;
+    }
+
+    public void setEventtype(String eventtype) {
+        this.eventtype = eventtype;
     }
 
     public EventInfo(String compname, String eventtype, String eventname) {

@@ -1,4 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?><FDL version="2.1"><Form {formInfo}>{layouts}<Objects><Dataset id = "dstCond1" > 
+<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.1">
+<Form  id="TmSpcMnyTrustFundMgr_man01" width="1580" height="795" oninit="TmSpcMnyTrustFundMgr_man01_oninit" onload="TmSpcMnyTrustFundMgr_man01_onload">
+<Layouts>
+<Layout  id="TmSpcMnyTrustFundMgr_man01" width="1580" height="795" oninit="TmSpcMnyTrustFundMgr_man01_oninit" onload="TmSpcMnyTrustFundMgr_man01_onload">
+{layouts}
+</Layout>
+</Layouts>
+<Objects>
+<Dataset id = "dstCond1" > 
 <ColumnInfo><Column id="PRD_CD" type="STRING" size="256"/><Column id="PRD_NM" type="STRING" size="256"/><Column id="CURR_CD" type="STRING" size="256"/><Column id="CURR_NM" type="STRING" size="256"/><Column id="FUND_TYCD_NM" type="STRING" size="256"/><Column id="FUND_TYCD" type="STRING" size="256"/><Column id="FUND" type="STRING" size="256"/><Column id="FUND_NM" type="STRING" size="256"/><Column id="NEWYMD" type="STRING" size="256"/><Column id="MTYYMD" type="STRING" size="256"/><Column id="FUND_STS" type="STRING" size="256"/><Column id="TERMIN_YMD" type="STRING" size="256"/><Column id="CUST_BR" type="STRING" size="256"/><Column id="ACCT_NO" type="STRING" size="256"/><Column id="RSRV_MTHD_TYCD" type="STRING" size="256"/></ColumnInfo><Rows><Row/></Rows> 
 </Dataset>
 <Dataset id = "dstList1" > 
@@ -16,7 +25,10 @@
 <Dataset id = "dstFUND_STS" > 
 <ColumnInfo><Column id="CD" type="STRING" size="256"/><Column id="NM" type="STRING" size="256"/><Column id="ORG_NM" type="STRING" size="256"/></ColumnInfo> 
 </Dataset>
-</Objects><Script type ="xscript5.1"><![CDATA[/**
+
+</Objects>
+<Script type ="xscript5.1"><![CDATA[
+/**
 *  특정금전신탁펀드 관리(3113)
 *  @MenuPath	신탁상품 > 신탁상품공통
 *  @FileName	TmSpcMnyTrustFundMgr_man01.xfdl
@@ -495,4 +507,6 @@ this.dstList1_canrowposchange = function(obj,e)
 
 });
 
-]]></script></Form>
+
+]]></script>
+</Form>

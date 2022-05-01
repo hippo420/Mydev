@@ -1,12 +1,37 @@
 import java.util.List;
 
 public class Metadata {
+    List<Form> forms;
     List<Dataset> datasets;
-    List<Comp> comps;
+    List<UComp> ucomps;
     List<EventInfo> eventInfos;
     List<String> codes;
     public List<Dataset> getDatasets() {
         return datasets;
+    }
+
+    public Metadata(List<Form> forms, List<Dataset> datasets, List<UComp> ucomps, List<EventInfo> eventInfos, List<String> codes) {
+        this.forms=forms;
+        this.datasets = datasets;
+        this.ucomps = ucomps;
+        this.eventInfos = eventInfos;
+        this.codes = codes;
+    }
+
+    public List<Form> getForms() {
+        return forms;
+    }
+
+    public void setForms(List<Form> forms) {
+        this.forms = forms;
+    }
+
+    public List<UComp> getUcomps() {
+        return ucomps;
+    }
+
+    public void setUcomps(List<UComp> ucomps) {
+        this.ucomps = ucomps;
     }
 
     public List<String> getCodes() {
@@ -21,13 +46,7 @@ public class Metadata {
         this.datasets = datasets;
     }
 
-    public List<Comp> getComps() {
-        return comps;
-    }
 
-    public void setComps(List<Comp> comps) {
-        this.comps = comps;
-    }
 
     public List<EventInfo> getEventInfos() {
         return eventInfos;
@@ -37,10 +56,5 @@ public class Metadata {
         this.eventInfos = eventInfos;
     }
 
-    public Metadata(List<Dataset> datasets, List<Comp> comps, List<EventInfo> eventInfos, List<String> codes) {
-        this.datasets = datasets;
-        this.comps = comps;
-        this.eventInfos = eventInfos;
-        this.codes = codes;
-    }
+
 }

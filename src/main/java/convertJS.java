@@ -21,12 +21,17 @@ public class convertJS {
             metadata= extractKeyData(Data);
             String strdata = makeStr1(metadata.get(0).datasets,"D");
             String scode = makeStr(metadata.get(0).codes);
-            log(strdata);
+            String scomp = makeStr2(metadata.get(0).ucomps,metadata.get(0).eventInfos);
+            List<String> forminfo = new ArrayList<String>();
+            forminfo = makeStr3(metadata.get(0).forms,metadata.get(0).eventInfos);
+            String formdata = forminfo.get(0);
+            String laydata = forminfo.get(1);
+
             fileReader.close();
             List<String> outputs = new ArrayList<String>();
 
             //TODO Converting JS TO XFDL
-            outputs=convertJSToXDFL(scode,strdata);
+            outputs=convertJSToXDFL(formdata,laydata, scode,strdata);
 
             //파일쓰기
             File file = new File("/Users/gaebabja/IdeaProjects/Mydev/src/main/resources/XFDL/result.xfdl.js");
@@ -41,22 +46,30 @@ public class convertJS {
             String strCode ="";
             for(int i=0;i< outputs.size();i++)
             {
-                strCode+= outputs.get(i);
+                strCode+= outputs.get(i)+"\n";
             }
             bufferedWriter.write(strCode);
 
             bufferedWriter.close();
 //            fileWriter.close();
         }
-        catch(Exception e)
+//        catch(Exception e)
+//        {
+//            System.out.println("ㅍㅏ일 입출력오류"+e);
+//        }
+        catch (ArrayIndexOutOfBoundsException e)
         {
-            System.out.println("ㅍㅏ일 입출력오류");
+            System.out.println(e.getLocalizedMessage());
         }
         finally {
 
         }
 
     }
+
+
+
+
     public static List<String> readFile(String path)
     {
         List<String> stringList = new ArrayList<String>();
@@ -68,7 +81,7 @@ public class convertJS {
     {
         System.out.println(str);
     }
-    private static List<String> convertJSToXDFL(String sc, String ds) throws IOException{
+    private static List<String> convertJSToXDFL(String fd, String ld,String sc, String ds) throws IOException{
         List<String> results =new ArrayList<String>();
 
         log("convertJSToXDFL");
@@ -83,6 +96,18 @@ public class convertJS {
 
             for(int i=0;i<results.size();i++)
             {
+                if(results.get(i).indexOf("{forminfo}")>=0)
+                {
+                    String str= results.get(i).replace("{forminfo}",fd);
+                    results.remove(i);
+                    results.add(i,str);
+                }
+                if(results.get(i).indexOf("{layinfo}")>=0)
+                {
+                    String str= results.get(i).replace("{layinfo}",fd);
+                    results.remove(i);
+                    results.add(i,str);
+                }
                 //insert userscript into xdflmacro
                 if(results.get(i).indexOf("{userScripts}")>=0)
                 {
@@ -116,6 +141,85 @@ public class convertJS {
         }
         return  str;
     }
+    public static String DDaom(String value)
+    {
+        String str="";
+        if(value.indexOf('"')>=0)
+        {
+            value=value.substring(1,value.length()-1);
+        }
+        //System.out.println(value);
+        str+='"'+value+'"';
+        return str;
+    }
+
+    public static  List<String> makeStr3(List<Form> data, List<EventInfo> data1)
+    {
+        List<String> strList = new ArrayList<String>();
+        String str="";
+        String strEvent="";
+        for(int i =0;i<data1.size();i++)
+            if(data.get(0).id.trim().equals(data1.get(i).compname))
+                strEvent+=" "+data1.get(i).eventtype+"="+'"'+data1.get(i).eventname+'"';
+
+        str+=" id=" +'"'+data.get(0).id+'"'+ " width=" + '"' + data.get(0).width+'"'+" height="+'"'+data.get(0).height+'"'+strEvent;
+        strList.add(str);
+        strList.add(" width=" + '"' + data.get(0).width+'"'+" height="+'"'+data.get(0).height+'"');
+        return  strList;
+
+    }
+    public static  String makeStr2(List<UComp> data, List<EventInfo> data1)
+    {
+        String str="";
+        List<Boolean> flag =new ArrayList<Boolean>();
+
+
+        for(int i=0;i<data.size();i++)
+        {
+            int cnt=0;
+            String strEvent="";
+            for(int j=0;j<data1.size();j++)
+            {
+                String comp = '"'+data1.get(j).compname.trim()+'"';
+                if(comp.trim().equals(DDaom(data.get(i).getId().trim())))
+                {
+
+                    strEvent+=" "+data1.get(j).eventtype+"="+'"'+data1.get(j).eventname+'"';
+                }
+            }
+
+            str+="<"+data.get(i).getType()+" id ="+DDaom(data.get(i).getId());
+            if(!"Tabpage".equals(data.get(i).getType()))
+            {
+                if(data.get(i).getLeft()!=null && !data.get(i).getLeft().equals(""))
+                    str+=" left="+DDaom(data.get(i).getLeft());
+                if(data.get(i).getBottom()!=null&& !data.get(i).getBottom().equals(""))
+                    str+=" bottom="+DDaom(data.get(i).getBottom());
+                if(data.get(i).getTop()!=null&& data.get(i).getTop().length()!=0)
+                    str+=" top="+DDaom(data.get(i).getTop());
+                if(data.get(i).getRight()!=null&& !data.get(i).getRight().equals(""))
+                    str+=" right="+DDaom(data.get(i).getRight());
+                if(data.get(i).getHeight()!=null&& !data.get(i).getHeight().equals(""))
+                    str+=" height="+DDaom(data.get(i).getHeight());
+                if(data.get(i).getMaxheight()!=null&& !data.get(i).getMaxheight().equals(""))
+                    str+=" maxheight="+DDaom(data.get(i).getMaxheight());
+                if(data.get(i).getMinheight()!=null&& !data.get(i).getMinheight().equals(""))
+                    str+=" minheight="+DDaom(data.get(i).getMinheight());
+                if(data.get(i).getWidth()!=null&& !data.get(i).getWidth().equals(""))
+                    str+=" width="+DDaom(data.get(i).getWidth());
+                if(data.get(i).getMaxwidth()!=null&& !data.get(i).getMaxwidth().equals(""))
+                    str+=" maxwidth="+DDaom(data.get(i).getMaxwidth());
+                if(data.get(i).getMinwidth()!=null&& !data.get(i).getMinwidth().equals(""))
+                    str+=" minwidth="+DDaom(data.get(i).getMinwidth());
+            }
+            if(data.get(i).getInfo()!=null&& !data.get(i).getInfo().equals(""))
+                str+=" "+data.get(i).getInfo()+strEvent;
+            str+="/>\n";
+        }
+        log("UI comp str생성");
+        log(str);
+        return str;
+    }
 
     public  static  String makeStr1(List<Dataset> data, String type)
     {
@@ -143,7 +247,10 @@ public class convertJS {
         }
         return str;
     }
-    public static void extractEventData(List<String> data)
+
+
+
+    public static List<EventInfo> extractEventData(List<String> data)
     {
         List<EventInfo> eventInfoList = new ArrayList<EventInfo>();
 
@@ -154,32 +261,80 @@ public class convertJS {
             if(data.get(i).indexOf("addEventHandler")>=0)
             {
                 compname = data.get(i).substring(0,data.get(i).indexOf("addEventHandler")-1);
-                eventtype=data.get(i).substring(data.get(i).indexOf('"')+1,data.get(i).lastIndexOf('"'));
+                compname = compname.substring(compname.lastIndexOf('.')+1,compname.length());
+
+                eventtype=data.get(i).substring(data.get(i).indexOf("(")+2,data.get(i).indexOf(',')-1);
                 eventname=data.get(i).substring(data.get(i).indexOf(",this.")+6,data.get(i).lastIndexOf(','));
-                //System.out.println(compname+", "+eventtype+", "+eventname);
+                if("this".equals(compname))
+                    compname= eventname.substring(0,eventname.lastIndexOf('_'));
+                System.out.println(compname+", "+eventname+", "+eventtype);
                 eventInfoList.add(new EventInfo(compname,eventtype,eventname));
             }
 
         }
+        return eventInfoList;
     }
 
     public static List<Metadata> extractKeyData(List<String> data)
     {
         List<Metadata> md = new ArrayList<Metadata>();
         System.out.println("실행..."+data.size());
+        List<Form> formList=new ArrayList<Form>();
         List<Dataset> datasetList = new ArrayList<Dataset>();
-        List<Comp> compList=new ArrayList<Comp>();
+        //List<Comp> compList=new ArrayList<Comp>();
+        List<UComp> uCompList = new ArrayList<UComp>();
         List<String> sourcecode = new ArrayList<String>();
         List<EventInfo> eventInfoList = new ArrayList<EventInfo>();
         sourcecode=extractCode(data);
-        extractEventData(data);
+        eventInfoList=extractEventData(data);
         String keyword = "new ";
         int codeidx=0;
         for(int i=0;i<data.size();i++)
         {
-
-            if(data.get(i).indexOf(keyword)>=0)
+            //컴포넌트 정보
+            if(data.get(i).indexOf("this.on_create = function()")>=0)
             {
+                String formid="";
+                String fWidth="";
+                String fHeight="";
+                String fInfo="";
+                int j=i;
+                while (true)
+                {
+                    int idx=1;
+
+                    System.out.println("j:"+j);
+                    if(j==data.size()||data.get(j).indexOf("Object(Dataset, ExcelExportObject) Initialize")>=0) break;
+
+                    if(data.get(j).indexOf("set_name")>=0)
+                    {
+                        formid=data.get(j).substring(data.get(j).indexOf('"')+1,data.get(j).lastIndexOf('"'));
+
+                    }
+                    else if(data.get(j).indexOf("set_")>=0)
+                    {
+                        String key,value;
+                        key = data.get(j).substring(data.get(j).indexOf("set_")+4,data.get(j).indexOf('('));
+                        value=data.get(j).substring(data.get(j).indexOf('(')+1,data.get(j).indexOf(')'));
+                        System.out.println(key+" "+value);
+                        fInfo+=" "+key+"="+value;
+                    }
+                    else if(data.get(j).indexOf("_setFormPosition")>=0)
+                    {
+                        String str = data.get(j).substring(data.get(j).indexOf('(')+1,data.get(j).indexOf(')'));
+                        String[] tmp=str.split(",");
+                        fWidth=tmp[0];
+                        fHeight=tmp[1];
+                    }
+
+                    j++;
+                }
+                formList.add(new Form(formid,fWidth,fHeight,fInfo));
+
+            }
+            else if(data.get(i).indexOf(keyword)>=0)
+            {
+
                 //데이터셋정보
                 if(data.get(i).indexOf("new Dataset")>=0)
                 {
@@ -197,6 +352,8 @@ public class convertJS {
                 }
                 else if(data.get(i).indexOf("obj = new")>=0)
                 {
+                    if(data.get(i).indexOf("obj = new Layout")>=0)
+                        continue;
                     int idx=1;
                     int j=i;
                     if(j==data.size()) break;
@@ -205,11 +362,29 @@ public class convertJS {
                     String info="";
                     String parents="this";
                     compname = data.get(i).substring(data.get(i).indexOf("new")+4,data.get(i).indexOf('('));
+                    String tempParam = data.get(i).substring(data.get(i).indexOf('(')+1,data.get(i).indexOf(')'));
+
+                    String[] oParam ={"","","","","",""
+                                     ,"","","","","",""};
+
                     name = data.get(i).substring(data.get(i).indexOf('"')+1,data.get(i).indexOf(',')-1);
+                    if(data.get(i).indexOf("Dataset")==-1)
+                    {
+                        if(data.get(i).indexOf("Layout")>=0)
+                            continue;
+                        String[] oParamTemp={};
+                        oParamTemp= tempParam.split(",");
+                        for(int t=0;t<oParamTemp.length;t++)
+                        {
+                            if("null".equals(oParamTemp[t]))
+                                oParam[t] = "";
+                            else
+                                oParam[t]=oParamTemp[t];
+                        }
+                    }
                     while(true)
                     {
-                        if(j==data.size()) break;
-
+                        if(j==data.size()-1) break;
 
                         j+=1;
                         if(data.get(j).indexOf("obj = new")>=0)
@@ -235,11 +410,14 @@ public class convertJS {
                             break;
                         }
                     }
-//                    System.out.println("comp: " + compname);
-//                    System.out.println("name: " + name);
-//                    System.out.println("info: " + info);
-//                    System.out.println("parents: " + parents);
-                    compList.add(new Comp(compname,name,info,parents));
+                    //System.out.println("comp: " + compname);
+                    //System.out.println("name: " + name);
+                    //System.out.println("info: " + info);
+                    //System.out.println("parents: " + parents);
+                    //컴ㅁ포넌트 set_설정값을 어떻게 저장할 것인가........
+                   // compList.add(new Comp(compname,name,info,parents,null,null,null,null));
+                    uCompList.add(new UComp(compname,oParam[0],oParam[1],oParam[2],oParam[3],oParam[4],oParam[5],oParam[6],oParam[7]
+                                                    ,oParam[8],oParam[9],oParam[10],info,oParam[11] ));
                 }else
                     continue;
 
@@ -249,7 +427,7 @@ public class convertJS {
 
         }
 
-        md.add(new Metadata(datasetList,compList,eventInfoList,sourcecode));
+        md.add(new Metadata(formList,datasetList,uCompList,eventInfoList,sourcecode));
 
     return  md;
 
