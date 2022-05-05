@@ -13,8 +13,15 @@ public class convertJS {
         System.out.println(System.getProperty("user.dir"));
         List<Metadata> metadata = new ArrayList<Metadata>();
 
-        try(FileReader fileReader = new FileReader("/Users/gaebabja/IdeaProjects/Mydev/src/main/resources/JS/test.txt"))
+        String path="/Users/gaebabja/IdeaProjects/Mydev/src/main/resources/JS/";
+        String outPath="/Users/gaebabja/IdeaProjects/Mydev/src/main/resources/XFDL/";
+        String filename="test.xfdl.js";
+
+        String fileNicname= filename.substring(0,filename.indexOf('.'));
+
+        try(FileReader fileReader = new FileReader(path+filename))
         {
+
             List<String> Data= makeData(fileReader);
 
             //fileReader.close();
@@ -37,7 +44,7 @@ public class convertJS {
             outputs=convertJSToXDFL(formdata,laydata, scode,strdata,sComLay);
 
             //파일쓰기
-            File file = new File("/Users/gaebabja/IdeaProjects/Mydev/src/main/resources/XFDL/result.xfdl.js");
+            File file = new File(outPath+fileNicname+".xfdl");
             if(!file.exists())
             {
                 file.createNewFile();
@@ -87,7 +94,7 @@ public class convertJS {
     private static List<String> convertJSToXDFL(String fd, String ld,String sc, String ds, String scl) throws IOException{
         List<String> results =new ArrayList<String>();
 
-        log("convertJSToXDFL");
+        log("convertJSToXDFL......................");
         try(
         FileReader fileReader = new FileReader("/Users/gaebabja/IdeaProjects/Mydev/src/main/resources/xfdlMacro/xfdlmcro.txt");
         )
@@ -129,8 +136,9 @@ public class convertJS {
                 }
 
 
-                 // log(results.get(i));
+                 //
             }
+            log("파일생성완료!");
         }
         catch(Exception e)
         {
@@ -192,44 +200,45 @@ public class convertJS {
                         str=str.replace(ucomp.get(i).parents+"detail",comp.get(i));
                     }
                 }
+            }else{
+                if(ucomp.get(i).getParents().equals("this"))
+                {
+                    str+="\n"+comp.get(i);
+                }
             }
         }
 
         for(int i=0;i<ucomp.size();i++)
         {
-            String tmp ="";
-            if(ucomp.get(i).getType().trim().equals("Tab"))
-            {
+            if(ucomp.get(i).parents.equals("this")==false) {
+                String tmp = "";
+                if (ucomp.get(i).getType().trim().equals("Tab")) {
 
-                if(str.indexOf(ucomp.get(i).parents)>=0)
-                {
+                    if (str.indexOf(ucomp.get(i).parents) >= 0) {
 
-                    tmp=str.replace(ucomp.get(i).parents+"detail",comp.get(i));
-                    str=tmp;
-                    tmp="";
-                }
+                        tmp = str.replace(ucomp.get(i).parents + "detail", comp.get(i));
+                        str = tmp;
+                        tmp = "";
+                    }
 
-            }else if(ucomp.get(i).getType().trim().equals("Tabpage"))
-            {
-                //System.out.println(ucomp.get(i).getType()+"...."+ucomp.get(i).parents);
-                if(str.indexOf(ucomp.get(i).parents+"detail")>=0)
-                {
-                    str=str.replace(ucomp.get(i).parents+"detail",comp.get(i)+ucomp.get(i).parents+"detail");
-                }
-            }
-            else if(!ucomp.get(i).getType().trim().equals("Div"))
-            {
-                if(str.indexOf(ucomp.get(i).parents+"detail")>=0)
-                {
-                    str=str.replace(ucomp.get(i).parents+"detail",comp.get(i)+ucomp.get(i).parents+"detail");
+                } else if (ucomp.get(i).getType().trim().equals("Tabpage")) {
+                    //System.out.println(ucomp.get(i).getType()+"...."+ucomp.get(i).parents);
+                    if (str.indexOf(ucomp.get(i).parents + "detail") >= 0) {
+                        str = str.replace(ucomp.get(i).parents + "detail", comp.get(i) + ucomp.get(i).parents + "detail");
+                    }
+                } else {
+                    if (str.indexOf(ucomp.get(i).parents + "detail") >= 0) {
+                        str = str.replace(ucomp.get(i).parents + "detail", comp.get(i) + ucomp.get(i).parents + "detail");
+                    }
                 }
             }
-
         }
 
-        for(String vo: dep)
-            str = str.replace(vo + "detail", "");
-
+        for(String vo : dep) {
+            log(vo);
+            str=str.replace(vo + "detail", "");
+            //stringBuffer.re
+        }
         return str;
     }
     public static  List<String> makeStr3(List<Form> data, List<EventInfo> data1)
@@ -323,9 +332,10 @@ public class convertJS {
                 }else {
                     if (data.get(i).getType().trim().equals("Grid")) {
 
-                        String details = data.get(i).getInfo().substring(data.get(i).getInfo().indexOf("Contents"), data.get(i).getInfo().length() - 1);
-
+                        String details = data.get(i).getInfo().substring(data.get(i).getInfo().indexOf("Contents")+10, data.get(i).getInfo().length()-1);
+                        //log(details);
                         str += ">\n" + details + "\n" + "</" + data.get(i).getType() + ">\n";
+                        //log(str);
                     } else
                         str += "/>\n";
                 }
@@ -554,15 +564,20 @@ public class convertJS {
                             parents=parents.replace(".form","");
                             parents=parents.replace(".",",");
 
-                            //char deli = '.';
+                            //deli = '.';
                             String[] tmpPa = parents.split(",");
 
                             for(int p=0;p< tmpPa.length;p++)
                             {
 
                                 if(compDepth.size()< p+1){
-                                    for(int s =0;s<p+1-compDepth.size();s++)
+                                    for(int s =0;s<p+1-compDepth.size();s++) {
                                         compDepth.add(tmpPa[p]);
+                                        if(!compDepth.contains(name) && compname.equals("Div"))
+                                        {
+                                            compDepth.add(name);
+                                        }
+                                    }
                                 }
 
                                 if(compDepth.get(p).indexOf(tmpPa[p])<0)
