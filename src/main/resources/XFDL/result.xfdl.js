@@ -2,8 +2,71 @@
 <FDL version="2.1">
 <Form  id="TmSpcMnyTrustFundMgr_man01" width="1580" height="795" oninit="TmSpcMnyTrustFundMgr_man01_oninit" onload="TmSpcMnyTrustFundMgr_man01_onload">
 <Layouts>
-<Layout  id="TmSpcMnyTrustFundMgr_man01" width="1580" height="795" oninit="TmSpcMnyTrustFundMgr_man01_oninit" onload="TmSpcMnyTrustFundMgr_man01_onload">
-{layouts}
+<Layout  width="1580" height="795">
+<Div id ="divDetail1" bottom="2" top="119" right="0" width="1185"  taborder="3" text="">
+<Layouts>
+<Layout>
+<Tab id ="tabMian" left="0" bottom="0" top="38" right="0"  taborder="6" tabindex="0" preload="true" canchange="divDetail1_tabMian_canchange" onchanged="divDetail1_tabMian_onchanged">
+<Tabpages>
+<Tabpage id ="Tabpage1"  text="펀드상세정보" url="bo::bn/BnItemInfoMgr_div01.xfdl"/>
+<Tabpage id ="Tabpage2"  text="운용상품정보" url="bo::bn/BnItemInfoMgr_div02.xfdl"/>
+<Tabpage id ="Tabpage3"  text="펀드수수료정보" url="bo::bn/BnItemInfoMgr_div03.xfdl" enableskip="true" async="false"/>
+<Tabpage id ="Tabpage4"  text="선취보수정보" url="bo::bn/BnItemInfoMgr_div04.xfdl"/>
+<Tabpage id ="Tabpage5"  text="UMS정보" url="bo::bn/BnItemInfoMgr_div05.xfdl"/>
+
+</Tabpages>
+</Tab>
+</Layout>
+</Layouts>
+</Div>
+<Div id ="divCond1" left="0" top="0" right="0" height="119"  taborder="0" cssclass="div_WF_SchBg" scrollbars="none" tabstop="false" text="">
+<Layouts>
+<Layout>
+<Static id ="staCURR_CD" left="840" top="5" height="23" width="66"  text="통화" cssclass="sta_WF_SchLabel" taborder="1"/>
+<uCodeCombo id ="ucbCURR_CD" left="933" top="5" height="23" width="270"  taborder="0" _11_binddataset="dstCond1" _21_popupheight="400" visible="true" _20_popupwidth="400" _14_type="search" _24_iscutname="false" _12_bindcodecol="CURR_CD" _13_binddatacol="CURR_NM" _15_innercodecol="CD" _16_innerdatacol="NM" _22_innerdisplaycols="CD,NM" _23_innerdisplayheadcaptions="통화,통화명" _32_treelevelcol="PRD_LEVEL" _33_treecaptioncol="DIS_TEXT" _30_ispreload="true" _34_isfilteruppercase="true" _25_nulltext="전체" _28_codelength="3" _17_innerdataset="dstCURR_CD"/>
+<Static id ="staFUND_TYCD" left="0" top="5" height="23" width="90"  text="펀드분류" cssclass="sta_WF_SchLabel" taborder="2"/>
+<uCodeCombo id ="ucbFUND_TYCD" left="93" top="5" height="23" width="290"  taborder="3" _11_binddataset="dstCond1" _12_bindcodecol="FUND_TYCD" _13_binddatacol="FUND_TYCD_NM" _14_type="tree" _16_innerdatacol="NM" _22_innerdisplaycols="CD,NM" _23_innerdisplayheadcaptions="펀드,펀드명" _24_iscutname="true" _25_nulltext="전체" _30_ispreload="true" _28_codelength="3" _15_innercodecol="CD" _17_innerdataset="dstFUND_TYCD" _32_treelevelcol="PRD_LEVEL" _33_treecaptioncol="DIS_TEXT" _50_outputcols="FUND_TYCD_NM=NM"/>
+<Static id ="staFUND" left="386" top="5" height="23" width="90"  text="펀드" cssclass="sta_WF_SchLabel" taborder="4"/>
+<uCodeCombo id ="ucbFUND" left="479" top="5" height="23" width="290"  taborder="5" _10_sqlid="FR_FUND" _11_binddataset="dstCond1" _12_bindcodecol="FUND" _13_binddatacol="FUND_NM" _15_innercodecol="CD" _16_innerdatacol="NM" _22_innerdisplaycols="CD,NM" _23_innerdisplayheadcaptions="펀드,펀드명" _25_nulltext="전체" _28_codelength="12" _80_uselazyload="false" _81_pagesize="100" _30_ispreload="true" _50_outputcols="FUND_NAME_FROM=NM" _24_iscutname="true" _221_colswidth="150,200"/>
+<Static id ="staGC_AC00_00" left="0" top="33" height="23" width="90"  text="상품" cssclass="sta_WF_SchLabel" taborder="6"/>
+<uCodeCombo id ="ucbPRD_CD" left="93" top="33" height="23" width="290"  taborder="7" _11_binddataset="dstCond1" _12_bindcodecol="PRD_CD" _13_binddatacol="PRD_NM" _15_innercodecol="CD" _16_innerdatacol="NM" _22_innerdisplaycols="CD,NM" _23_innerdisplayheadcaptions="상품,상품명" _25_nulltext="전체" _28_codelength="12" _80_uselazyload="false" _81_pagesize="100" _30_ispreload="true" _50_outputcols="PRD_NM=NM" _24_iscutname="true" _221_colswidth="150,200" _17_innerdataset="dstPRD_CD" _14_type="tree" _32_treelevelcol="PRD_LEVEL" _33_treecaptioncol="DIS_TEXT"/>
+<Static id ="staACCT_NO" left="0" top="61" height="23" width="90"  text="계좌번호" cssclass="sta_WF_SchLabel" taborder="8"/>
+<uCodeCombo id ="ucbACCT_NO" left="93" top="61" height="23" width="290"  taborder="9" _10_sqlid="FR_FUND" _11_binddataset="dstCond1" _12_bindcodecol="FUND_LIST_FROM" _13_binddatacol="FUND_NAME_FROM" _15_innercodecol="CD" _16_innerdatacol="NM" _22_innerdisplaycols="CD,NM" _23_innerdisplayheadcaptions="펀드,펀드명" _25_nulltext="전체" _28_codelength="12" _80_uselazyload="false" _81_pagesize="100" _30_ispreload="true" _50_outputcols="FUND_NAME_FROM=NM" _24_iscutname="true" _221_colswidth="150,200"/>
+<uCombo id ="cboRSRV_MTHD_TYCD" left="93" top="89" height="23" width="165"  taborder="10" innerdataset="dstPRD_KIND" codecolumn="CD" datacolumn="NM" enable="true" displaynulltext="전체" useclearbutton="true" value="0" index="0"/>
+<Static id ="staRSRV_MTHD_TYCD" left="0" top="89" height="23" width="90"  text="적립방법" cssclass="sta_WF_SchLabel" taborder="11"/>
+<uCalDayFromTo id ="NEWYMD" left="479" top="33" height="23" width="200"  taborder="12"/>
+<Static id ="staNEW_YMD" left="386" top="33" height="23" width="90"  text="신규일" cssclass="sta_WF_SchLabel" taborder="13"/>
+<Static id ="staGC_AC00_01_00" left="386" top="61" height="23" width="90"  text="만기일" cssclass="sta_WF_SchLabel" taborder="14"/>
+<uCalDayFromTo id ="MTYYMD" left="479" top="61" height="23" width="200"  taborder="15"/>
+<Static id ="staFUND_STS" left="386" top="89" height="23" width="90"  text="펀드상태" cssclass="sta_WF_SchLabel" taborder="16"/>
+<uCombo id ="cboFUND_STS" left="479" top="89" height="23" width="165"  taborder="17" innerdataset="dstFUND_STS" codecolumn="CD" datacolumn="NM" enable="true" displaynulltext="전체" useclearbutton="true" value="0" index="0"/>
+<Static id ="staTERMIN_YMD" left="840" top="33" height="23" width="90"  text="해지일" cssclass="sta_WF_SchLabel" taborder="18"/>
+<Static id ="staCUST_BR" left="840" top="61" height="23" width="78"  text="수탁점" cssclass="sta_WF_SchLabel" taborder="19"/>
+<Static id ="staBR" left="840" top="89" height="23" width="78"  text="관리점" cssclass="sta_WF_SchLabel" taborder="20"/>
+<Edit id ="edtTERMIN_YMD" left="933" top="33" height="23" width="138"  taborder="21"/>
+<CheckBox id ="chk00" left="1074" top="33" height="23" width="100"  taborder="22" text="상환펀드제외"/>
+<uCodeCombo id ="ucbCUST_BR" left="933" top="61" height="23" width="290"  taborder="23" _10_sqlid="FR_FUND" _11_binddataset="dstCond1" _12_bindcodecol="FUND_LIST_FROM" _13_binddatacol="FUND_NAME_FROM" _15_innercodecol="CD" _16_innerdatacol="NM" _22_innerdisplaycols="CD,NM" _23_innerdisplayheadcaptions="펀드,펀드명" _25_nulltext="전체" _28_codelength="12" _80_uselazyload="false" _81_pagesize="100" _30_ispreload="true" _50_outputcols="FUND_NAME_FROM=NM" _24_iscutname="true" _221_colswidth="150,200"/>
+<uCodeCombo id ="ucbBR" left="933" top="89" height="23" width="290"  taborder="24" _10_sqlid="FR_FUND" _11_binddataset="dstCond1" _12_bindcodecol="FUND_LIST_FROM" _13_binddatacol="FUND_NAME_FROM" _15_innercodecol="CD" _16_innerdatacol="NM" _22_innerdisplaycols="CD,NM" _23_innerdisplayheadcaptions="펀드,펀드명" _25_nulltext="전체" _28_codelength="12" _80_uselazyload="false" _81_pagesize="100" _30_ispreload="true" _50_outputcols="FUND_NAME_FROM=NM" _24_iscutname="true" _221_colswidth="150,200"/>
+<Edit id ="edtFUND_CURR_CD" left="772" top="5" height="23" width="65"  taborder="25" enable="false"/>
+
+</Layout>
+</Layouts>
+</Div>
+<Div id ="divList1" left="0" bottom="0" top="119" right="1205"  taborder="1" cssclass="div_WF_ListBg">
+<Layouts>
+<Layout>
+<Static id ="staSubTitle1" left="0" top="0" height="38" width="200"  taborder="0" text="펀드목록" cssclass="sta_WF_SubTitle01" fittocontents="width"/>
+<Static id ="staTotCnt1" top="10" right="0" height="23" width="70"  taborder="2" text="총 0건" cssclass="sta_WF_Total" fittocontents="width"/>
+<Button id ="btnSumView" top="10" right="staTotCnt1:3" height="23" width="46"  taborder="4" text="요약" cssclass="btn_WF_ModCustom" fittocontents="width" onclick="fnSetGrdView"/>
+<Button id ="btnAllView" top="10" right="staTotCnt1:3" height="23" width="46"  taborder="1" text="전체" cssclass="btn_WF_ModCustom" fittocontents="width" onclick="fnSetGrdView"/>
+<Grid id ="grdList1" left="0" bottom="30" top="38" right="0"  taborder="3" tabstop="false" binddataset="dstList1" readonly="true" autoenter="select" cellsizingtype="col" userdata="" cellmovingtype="col" nodataimage="url('theme://images/grd_WF_Nodata.png')"  oncellclick="grdList1_oncellclick" oncelldblclick="grdList1_oncelldblclick" onheadclick="grdList1_onheadclick">
+Contents="<Formats><Format id="default"><Columns><Column size="32"/><Column size="35"/><Column size="100"/><Column size="150"/><Column size="150"/><Column size="130"/><Column size="87"/><Column size="120"/><Column size="100"/><Column size="100"/><Column size="100"/><Column size="111"/><Column size="112"/><Column size="80"/><Column size="80"/><Column size="80"/><Column size="80"/><Column size="100"/><Column size="105"/><Column size="99"/><Column size="110"/><Column size="119"/><Column size="107"/><Column size="148"/><Column size="107"/><Column size="107"/><Column size="118"/><Column size="145"/><Column size="136"/></Columns><Rows><Row size="60" band="head"/><Row size="28"/></Rows><Band id="head"><Cell displaytype="text" text="NO"/><Cell col="1" displaytype="checkboxcontrol" edittype="checkbox"/><Cell col="2" displaytype="text" text="펀드코드"/><Cell col="3" displaytype="text" text="계좌번호"/><Cell col="4" displaytype="text" text="위탁자"/><Cell col="5" displaytype="text" text="수탁일자"/><Cell col="6" displaytype="text" text="만기일자"/><Cell col="7" displaytype="text" text="해지일자"/><Cell col="8" displaytype="text" text="수탁잔액"/><Cell col="9" displaytype="text" text="통화"/><Cell col="10" displaytype="text" text="상품코드"/><Cell col="11" displaytype="text" text="타익여부"/><Cell col="12" displaytype="text" text="수탁점"/><Cell col="13" displaytype="text" text="관리점"/><Cell col="14" displaytype="text" text="원본수익자"/><Cell col="15" displaytype="text" text="이익수익자"/><Cell col="16" displaytype="text" text="적립방법"/><Cell col="17" displaytype="text" text="이익지급방법"/><Cell col="18" displaytype="text" text="멀티에셋여부"/><Cell col="19" displaytype="text" text="과세코드"/><Cell col="20" displaytype="text" text="펀드상태"/><Cell col="21" displaytype="text" text="이익지급일자"/><Cell col="22" displaytype="text" text="선취전거래금액"/><Cell col="23" displaytype="text" text="선취보수금액"/><Cell col="24" displaytype="text" text="선취보수율(%)"/><Cell col="25" displaytype="text" text="자동해지신청여부"/><Cell col="26" displaytype="text" text="코어상품코드"/><Cell col="27" displaytype="text" text="최종변경일시"/><Cell col="28" displaytype="text" text="최종변경사번"/></Band><Band id="body"><Cell celltype="none" displaytype="text" textAlign="right" expr="currow+1"/><Cell col="1" displaytype="checkboxcontrol" edittype="checkbox" text="bind:CHK"/><Cell col="2" displaytype="normal" text="bind:FUND" textAlign="center"/><Cell col="3" displaytype="normal" text="bind:ACCT_NO" textAlign="left"/><Cell col="4" displaytype="normal" textAlign="left" text="bind:IMC"/><Cell col="5" displaytype="normal" textAlign="center" text="bind:CUST_YMD"/><Cell col="6" displaytype="text" textAlign="center" text="bind:MTYYMD"/><Cell col="7" displaytype="normal" textAlign="left" text="bind:TERMIN_YMD"/><Cell col="8" displaytype="normal" edittype="none" text="bind:CUST_BLNC" combodataset="dstNATION2" combocodecol="CD" combodatacol="NM" textAlign="center"/><Cell col="9" displaytype="normal" text="bind:CURR_CD" combodataset="dstNATION2" combocodecol="CD" combodatacol="NM"/><Cell col="10" displaytype="text" text="bind:PRD_CD" textAlign="center"/><Cell col="11" text="bind:OPROFIT_YN" displaytype="normal" textAlign="center"/><Cell col="12" displaytype="normal" text="bind:BR" combodataset="dstISSUE_MKT_TYCD" combocodecol="CD" combodatacol="ORG_NM" textAlign="center"/><Cell col="13" displaytype="normal" textAlign="center" text="bind:PROC_BR"/><Cell col="14" displaytype="normal" textAlign="center" text="bind:CPRN_BEN_CLNT" calendardateformat="yyyy-MM-dd" calendardisplaynulltype="nulltext"/><Cell col="15" displaytype="normal" textAlign="center" text="bind:PROFIT_BEN_CLNT" combodataset="dstESTPRICE_TYCD" combocodecol="CD" combodatacol="ORG_NM" calendardisplaynulltype="nulltext" calendardateformat="yyyy-MM-dd"/><Cell col="16" displaytype="number" textAlign="right" text="bind:RSRV_MTHD" combodataset="dstINT_DAYS_TYCD" combocodecol="CD" combodatacol="ORG_NM"/><Cell col="17" displaytype="normal" textAlign="center" text="bind:PROFIT_PAY_MTHD" combodataset="dstBUSINESS_DAY_TYCD" combocodecol="CD" combodatacol="ORG_NM"/><Cell col="18" displaytype="normal" calendardateformat="yyyy-MM-dd" textAlign="center" text="bind:MLT_ASSET_YN" calendardisplaynulltype="nulltext"/><Cell col="19" displaytype="number" text="bind:TXN_CD" combodataset="dstBOND_ATTR_TYCD" combocodecol="CD" combodatacol="ORG_NM" textAlign="right"/><Cell col="20" displaytype="number" text="bind:FUND_STS" textAlign="right"/><Cell col="21" displaytype="number" textAlign="right" text="bind:PROFIT_PAY_YMD" combodataset="dstINT_CLASS" combocodecol="CD" combodatacol="ORG_NM"/><Cell col="22" displaytype="number" calendardateformat="yyyy-MM-dd" textAlign="right" text="bind:BFTAKE_BEF_TR_AMT" calendardisplaynulltype="nulltext"/><Cell col="23" displaytype="number" calendardateformat="yyyy-MM-dd" textAlign="right" text="bind:BFTAKE_FEE_AMT" calendardisplaynulltype="nulltext"/><Cell col="24" displaytype="combotext" textAlign="center" text="bind:BFTAKE_FEE_RATE" combodataset="dstIRT_ENGG_TYCD" combocodecol="CD" combodatacol="ORG_NM"/><Cell col="25" displaytype="combotext" textAlign="center" text="bind:AUTO_OUT_PROPS_YN" combodataset="dstINT_PAY_TYCD" combocodecol="CD" combodatacol="ORG_NM"/><Cell col="26" displaytype="combotext" textAlign="center" text="bind:CORE_PRD_CD" combodataset="dstINT_POCP_DFACQ_TYCD" combocodecol="CD" combodatacol="ORG_NM"/><Cell col="27" displaytype="combotext" textAlign="center" text="bind:LAST_CHG_DM" combodataset="dstPRE_SALE_INT_PAY_TYCD" combocodecol="CD" combodatacol="ORG_NM"/><Cell col="28" displaytype="number" textAlign="right" text="bind:LAST_CHG_ID"/></Band></Format></Formats>
+</Grid>
+
+</Layout>
+</Layouts>
+</Div>
+
 </Layout>
 </Layouts>
 <Objects>
