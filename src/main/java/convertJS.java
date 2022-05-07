@@ -1,79 +1,71 @@
 import java.io.*;
-import java.lang.module.FindException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 public class convertJS {
 
-
+    private static  String path=Constants.PATH;
+    private static String outPath=Constants.OUTPATH;
 
     public static void main(String[] args) throws IOException
     {
-        System.out.println(System.getProperty("user.dir"));
-        List<Metadata> metadata = new ArrayList<Metadata>();
 
-        String path="/Users/gaebabja/IdeaProjects/Mydev/src/main/resources/JS/";
-        String outPath="/Users/gaebabja/IdeaProjects/Mydev/src/main/resources/XFDL/";
-        String filename="test.xfdl.js";
+        List<String> fileList = new ArrayList<String>(fileList = extractFilePath.freader());
 
-        String fileNicname= filename.substring(0,filename.indexOf('.'));
-
-        try(FileReader fileReader = new FileReader(path+filename))
+        for(String vo : fileList)
         {
 
-            List<String> Data= makeData(fileReader);
+            String fileNicname= vo.substring(vo.lastIndexOf('/')+1,vo.indexOf('.'));
 
-            //fileReader.close();
-            metadata= extractKeyData(Data);
-            String strdata = makeStr1(metadata.get(0).datasets,"D");
-            String scode = makeStr(metadata.get(0).codes);
-            List<String> scomp = new ArrayList<String>();
-            scomp =makeStr2(metadata.get(0).ucomps,metadata.get(0).eventInfos);
-            List<String> forminfo = new ArrayList<String>();
-            forminfo = makeStr3(metadata.get(0).forms,metadata.get(0).eventInfos);
-
-            String formdata = forminfo.get(0);
-            String laydata = forminfo.get(1);
-
-            String sComLay = makeStr4(metadata.get(0).depths,scomp,metadata.get(0).ucomps);
-            fileReader.close();
-            List<String> outputs = new ArrayList<String>();
-
-            //TODO Converting JS TO XFDL
-            outputs=convertJSToXDFL(formdata,laydata, scode,strdata,sComLay);
-
-            //파일쓰기
-            File file = new File(outPath+fileNicname+".xfdl");
-            if(!file.exists())
+            try(FileReader fileReader = new FileReader(vo))
             {
-                file.createNewFile();
+                List<String> Data= makeData(fileReader);
+                fileReader.close();
+
+                List<Metadata> metadata = new ArrayList<Metadata>(metadata= extractKeyData(Data));
+
+                String strdata = makeStr1(metadata.get(0).datasets,"D");
+                String scode = makeStr(metadata.get(0).codes);
+                List<String> scomp = new ArrayList<String>(makeStr2(metadata.get(0).ucomps,metadata.get(0).eventInfos));
+                List<String> forminfo = new ArrayList<String>(makeStr3(metadata.get(0).forms,metadata.get(0).eventInfos));
+                String formdata = forminfo.get(0);
+                String laydata = forminfo.get(1);
+
+                String sComLay = makeStr4(metadata.get(0).depths,scomp,metadata.get(0).ucomps);
+                List<String> outputs = new ArrayList<String>();
+
+                //TODO Converting JS TO XFDL
+                outputs=convertJSToXDFL(formdata,laydata, scode,strdata,sComLay);
+
+                //파일쓰기
+                File file = new File(outPath+fileNicname+".xfdl");
+                if(!file.exists())
+                {
+                    file.createNewFile();
+                }
+
+                FileWriter fileWriter = new FileWriter(file);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+                String strCode ="";
+                for(int i=0;i< outputs.size();i++)
+                    strCode+= outputs.get(i)+"\n";
+
+                bufferedWriter.write(strCode);
+                bufferedWriter.close();
+                System.out.println("["+fileNicname+"]...파일 생성 완료");
+            }
+            catch(Exception e)
+            {
+                System.out.println("ㅍㅏ일 입출력오류"+e);
             }
 
-            FileWriter fileWriter = new FileWriter(file);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-
-            String strCode ="";
-            for(int i=0;i< outputs.size();i++)
-            {
-                strCode+= outputs.get(i)+"\n";
-            }
-            bufferedWriter.write(strCode);
-
-            bufferedWriter.close();
-//            fileWriter.close();
         }
-//        catch(Exception e)
-//        {
-//            System.out.println("ㅍㅏ일 입출력오류"+e);
-//        }
-        catch (ArrayIndexOutOfBoundsException e)
-        {
-            System.out.println(e.getLocalizedMessage());
-        }
-        finally {
 
-        }
+
+
+
+
 
     }
 
@@ -94,13 +86,10 @@ public class convertJS {
     private static List<String> convertJSToXDFL(String fd, String ld,String sc, String ds, String scl) throws IOException{
         List<String> results =new ArrayList<String>();
 
-        log("convertJSToXDFL......................");
-        try(
-        FileReader fileReader = new FileReader("/Users/gaebabja/IdeaProjects/Mydev/src/main/resources/xfdlMacro/xfdlmcro.txt");
-        )
+
+        try(FileReader fileReader = new FileReader(Constants.MACROPATH))
         {
-            //script
-            //List<String> str1 =new ArrayList<String>();
+
             results = makeData(fileReader);
             fileReader.close();
 
@@ -118,7 +107,6 @@ public class convertJS {
                     results.remove(i);
                     results.add(i,str);
                 }
-                //insert userscript into xdflmacro
                 if(results.get(i).indexOf("{userScripts}")>=0)
                 {
                     results.remove(i);
@@ -135,14 +123,11 @@ public class convertJS {
                     results.add(i,scl);
                 }
 
-
-                 //
             }
-            log("파일생성완료!");
         }
         catch(Exception e)
         {
-            System.out.println("매크로 에러");
+            System.out.println("매크로 입출력 에러.......f");
         }
         return  results;
     }
@@ -234,11 +219,6 @@ public class convertJS {
             }
         }
 
-        for(String vo : dep) {
-            log(vo);
-            str=str.replace(vo + "detail", "");
-            //stringBuffer.re
-        }
         return str;
     }
     public static  List<String> makeStr3(List<Form> data, List<EventInfo> data1)
@@ -406,7 +386,6 @@ public class convertJS {
     public static List<Metadata> extractKeyData(List<String> data)
     {
         List<Metadata> md = new ArrayList<Metadata>();
-        System.out.println("실행..."+data.size());
         List<Form> formList=new ArrayList<Form>();
         List<Dataset> datasetList = new ArrayList<Dataset>();
         //List<Comp> compList=new ArrayList<Comp>();
@@ -596,12 +575,7 @@ public class convertJS {
                             break;
                         }
                     }
-                    //System.out.println("comp: " + compname);
-                    //System.out.println("name: " + name);
-                    //System.out.println("info: " + info);
-                    //System.out.println("parents: " + parents);
-                    //컴ㅁ포넌트 set_설정값을 어떻게 저장할 것인가........
-                   // compList.add(new Comp(compname,name,info,parents,null,null,null,null));
+
                     uCompList.add(new UComp(compname,oParam[0],oParam[1],oParam[2],oParam[3],oParam[4],oParam[5],oParam[6],oParam[7]
                                                     ,oParam[8],oParam[9],oParam[10],info,parents));
                 }else

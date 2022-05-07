@@ -12,7 +12,7 @@
 <Div id ="Div00_0_0" left="37" top="10" height="16" width="113"  taborder="0" text="Div00">
 <Layouts>
 <Layout>
-
+Div00_0_0detail
 </Layout>
 </Layouts>
 </Div>
@@ -28,7 +28,7 @@
 <Grid id ="Grid00" left="23" top="18" height="98" width="364"  taborder="0"  cantreestatuschange="Div01_Grid00_cantreestatuschange">
 
 </Grid>
-
+Div01detail
 </Layout>
 </Layouts>
 </Div>
@@ -43,7 +43,7 @@
 <Tabpages>
 <Tabpage id ="Tabpage1"  text="Tabpage1"/>
 <Tabpage id ="Tabpage2"  text="Tabpage2"/>
-
+Tab00detail
 </Tabpages>
 </Tab>
 </Layout>
