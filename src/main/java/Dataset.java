@@ -1,10 +1,12 @@
 public class Dataset {
     String name;
+    String info;
     String colInfo;
 
-    public Dataset(String name, String colInfo) {
+    public Dataset(String name, String colInfo, String info) {
         this.name = name;
         this.colInfo = colInfo;
+        this.info = info;
     }
 
     public String getName() {
@@ -22,4 +24,14 @@ public class Dataset {
     public void setColInfo(String colInfo) {
         this.colInfo = colInfo;
     }
+
+	public String getInfo() {
+		return info;
+	}
+
+	public void setInfo(String info) {
+		this.info = info;
+	}
+    
+    
 }

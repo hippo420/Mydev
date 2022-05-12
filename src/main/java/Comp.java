@@ -1,4 +1,4 @@
-import com.mysql.cj.util.DnsSrv;
+
 
 public class Comp {
 

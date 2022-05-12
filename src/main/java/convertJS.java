@@ -1,21 +1,25 @@
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class convertJS {
 
-    private static  String path=Constants.PATH;
-    private static String outPath=Constants.OUTPATH;
+
 
     public static void main(String[] args) throws IOException
     {
-
+    	String path=Constants.PATH;
+    	String outPath=Constants.OUTPATH;
         List<String> fileList = new ArrayList<String>(fileList = extractFilePath.freader());
 
         for(String vo : fileList)
         {
 
-            String fileNicname= vo.substring(vo.lastIndexOf('/')+1,vo.indexOf('.'));
+            String fileNicname= vo.substring(vo.lastIndexOf("JS")+3,vo.indexOf('.'));
 
             try(FileReader fileReader = new FileReader(vo))
             {
@@ -335,15 +339,16 @@ public class convertJS {
         switch (type)
         {
             case "D":
-                String name="", event="", info="";
+                String name="", event="", info="",colinfo="";
 
 
                 //System.out.println(data.size());
                 for(int i=0;i<data.size();i++)
                 {
                     name = data.get(i).name;
-                    info = data.get(i).colInfo;
-                    String tempdata="<Dataset id = "+'"'+name+'"'+" "+event+"> \n" +info+" \n</Dataset>";
+                    info = data.get(i).info;
+                    colinfo = data.get(i).colInfo;
+                    String tempdata="<Dataset id = "+'"'+name+'"'+" "+info+" "+event+"> \n" +colinfo+" \n</Dataset>";
                     str+=tempdata.replace("\\","");
                     str+="\n";
                 }
@@ -446,11 +451,47 @@ public class convertJS {
                 //데이터셋정보
                 if(data.get(i).indexOf("new Dataset")>=0)
                 {
-                    String name;
-                    String info;
+                    String name="";
+                    String colinfo="";
+                    String info="";
+                    int j=i;
+                    while(true)
+                    {
+                    	
+                    	 if(j==data.size()-1) break;
+
+                         j+=1;
+                         if(data.get(j).indexOf("obj = new")>=0)
+                             break;
+                         
+                         
+                         if(data.get(j).indexOf("_setContents")>=0)
+                         {
+                        	 String value="";
+                             
+                             value=data.get(j).substring(data.get(j).indexOf('(')+1,data.get(j).lastIndexOf(')'));
+                             colinfo=value;
+                         }
+                         if((data.get(j).indexOf("_set")>=0 ||data.get(j).indexOf("set_")>=0) && data.get(j).indexOf("_setContents")<0)
+                         {
+                        	 String key="",value="";
+                        	 if(data.get(j).indexOf("set_")>=0)
+                             {
+
+                                 key = data.get(j).substring(data.get(j).indexOf("set_")+4,data.get(j).indexOf('('));
+
+                             }
+                             else if(data.get(j).indexOf("_set")>=0)
+                             {
+                                 key = data.get(j).substring(data.get(j).indexOf("_set")+4,data.get(j).indexOf('('));
+                             }
+                             value=data.get(j).substring(data.get(j).indexOf('(')+1,data.get(j).lastIndexOf(')'));
+                        	 info+=" "+key+"="+value;
+                         }
+                    }
                     name = data.get(i).substring(data.get(i).indexOf('"')+1,data.get(i).lastIndexOf('"'));
-                    info = data.get(i+1).substring(data.get(i).indexOf('"'),data.get(i+1).lastIndexOf('"'));
-                    datasetList.add(new Dataset(name, info));
+                    
+                    datasetList.add(new Dataset(name, colinfo,info));
                     //System.out.println(name+" : "+info);
                 }else if(data.get(i).indexOf("registerScript")>=0)
                 {
