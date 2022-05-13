@@ -8,7 +8,7 @@ import java.util.List;
 
 public class convertJS {
 
-
+	
 
     public static void main(String[] args) throws IOException
     {
@@ -63,14 +63,7 @@ public class convertJS {
             {
                 System.out.println("ㅍㅏ일 입출력오류"+e);
             }
-
         }
-
-
-
-
-
-
     }
 
 
@@ -247,11 +240,11 @@ public class convertJS {
         String str="";
         List<Boolean> flag =new ArrayList<Boolean>();
 
-
         for(int i=0;i<data.size();i++)
         {
             int cnt=0;
             String strEvent="";
+            String rDataset="";
             for(int j=0;j<data1.size();j++)
             {
                 String comp = '"'+data1.get(j).compname.trim()+'"';
@@ -286,14 +279,32 @@ public class convertJS {
                 if(data.get(i).getMinwidth()!=null&& !data.get(i).getMinwidth().equals(""))
                     str+=" minwidth="+DDaom(data.get(i).getMinwidth());
             }
+            
             if(data.get(i).getInfo()!=null&& !data.get(i).getInfo().equals(""))
             {
-                String tmpInfo;
+                String tmpInfo="";
                 if(data.get(i).getType().equals("Grid"))
                 {
-                   //log("grid....");
-                    //log(data.get(i).getInfo());
                     tmpInfo =data.get(i).getInfo().substring(0,data.get(i).getInfo().indexOf("Contents"));
+                }
+                else if(data.get(i).getType().equals("Radio"))
+                {
+                	
+                	String innderdataset =data.get(i).getId().substring(1,data.get(i).getId().length()-1)+"_innerdataset";
+                	
+                	if(data.get(i).getInfo().indexOf(innderdataset)>=0)
+                	{
+                		
+                		tmpInfo = data.get(i).getInfo().substring(0,data.get(i).getInfo().indexOf("Contents"));
+                		rDataset = data.get(i).getInfo().substring(data.get(i).getInfo().indexOf("Contents")+10,data.get(i).getInfo().lastIndexOf("</Rows>")+"</Rows>".length());
+                		System.out.println(data.get(i).getId()+"["+data.get(i).getParents()+"]");
+                		System.out.println(tmpInfo);
+                		System.out.println(rDataset);
+                	}else {
+                		tmpInfo= data.get(i).getInfo();
+                		System.out.println(data.get(i).getId()+"["+data.get(i).getParents()+"]");
+                		System.out.println(tmpInfo);
+                	}
                 }
                 else
                 {
@@ -313,7 +324,14 @@ public class convertJS {
                 {
                     str+=">\n<Layouts>\n<Layout>\n"+data.get(i).getId().substring(1,data.get(i).getId().length()-1)+"detail\n</Layout>\n</Layouts>\n</Div>";
 
-                }else {
+                }
+                else if(data.get(i).getType().trim().equals("Radio"))
+                {
+                	if(rDataset.length()==0) str += "/>\n";
+                	else
+                		str+="\n"+rDataset+"\n</Radio>\n";
+                }
+                else {
                     if (data.get(i).getType().trim().equals("Grid")) {
 
                         String details = data.get(i).getInfo().substring(data.get(i).getInfo().indexOf("Contents")+10, data.get(i).getInfo().length()-1);
@@ -542,6 +560,7 @@ public class convertJS {
 
                         if(data.get(j).indexOf("set_")>=0||(data.get(j).indexOf("_setContents")>=0&&!compname.equals("Dataset"))||data.get(j).indexOf("getSetter")>=0)
                         {
+                        	
                             String key="",value="";
                             if(data.get(j).indexOf("set_")>=0)
                             {
@@ -616,7 +635,19 @@ public class convertJS {
                             break;
                         }
                     }
-
+                    String[] divcomp = {"uCalDayFromTo","uCalDay","uCalMMFromTo","uCalMM","uCodeCombo","uCombo"};
+                    for(int pidx =0;pidx<divcomp.length;pidx++)
+                    {
+                    	if("Div".equals(compname) && info.indexOf("url")>=0 &&info.indexOf(divcomp[pidx])>=0 )
+                    	{
+                    		compname = divcomp[pidx];
+                    		//url="fw::obj/uCalDayFromTo.xfdl"
+                    		String url = "url="+'"'+"fw::obj/"+divcomp[pidx]+".xfdl"+'"';
+                    		info = info.replaceAll(url, "");
+                    		break;
+                    	}
+                    }
+                    
                     uCompList.add(new UComp(compname,oParam[0],oParam[1],oParam[2],oParam[3],oParam[4],oParam[5],oParam[6],oParam[7]
                                                     ,oParam[8],oParam[9],oParam[10],info,parents));
                 }else
