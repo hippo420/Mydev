@@ -7,17 +7,19 @@ public class Metadata {
     List<EventInfo> eventInfos;
     List<String> codes;
     List<String> depths;
+    List<BindItem> binds;
     public List<Dataset> getDatasets() {
         return datasets;
     }
 
-    public Metadata(List<Form> forms, List<Dataset> datasets, List<UComp> ucomps, List<EventInfo> eventInfos, List<String> codes, List<String> depths) {
+    public Metadata(List<Form> forms, List<Dataset> datasets, List<UComp> ucomps, List<EventInfo> eventInfos, List<String> codes, List<String> depths, List<BindItem> binds) {
         this.forms=forms;
         this.datasets = datasets;
         this.ucomps = ucomps;
         this.eventInfos = eventInfos;
         this.codes = codes;
         this.depths = depths;
+        this.binds = binds;
     }
 
     public List<String> getDepths() {
@@ -65,6 +67,14 @@ public class Metadata {
     public void setEventInfos(List<EventInfo> eventInfos) {
         this.eventInfos = eventInfos;
     }
+
+	public List<BindItem> getBinds() {
+		return binds;
+	}
+
+	public void setBinds(List<BindItem> binds) {
+		this.binds = binds;
+	}
 
 
 }

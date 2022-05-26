@@ -6,11 +6,14 @@
             {layouts}
         </Layout>
     </Layouts>
-        <Objects>
-            {objects}
-        </Objects>
     <Script type ="xscript5.1"><![CDATA[
     {userScripts}
     ]]></Script>
+    <Objects>
+            {objects}
+    </Objects>
+    <Bind>
+    	{binds}
+    </Bind>
     </Form>
 </FDL>

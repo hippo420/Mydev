@@ -34,12 +34,14 @@ public class convertJS {
                 List<String> forminfo = new ArrayList<String>(makeStr3(metadata.get(0).forms,metadata.get(0).eventInfos));
                 String formdata = forminfo.get(0);
                 String laydata = forminfo.get(1);
-
+                String binddata = makeStr5(metadata.get(0).binds);
                 String sComLay = makeStr4(metadata.get(0).depths,scomp,metadata.get(0).ucomps);
+                List<String> tmpoutputs = new ArrayList<String>();
                 List<String> outputs = new ArrayList<String>();
-
                 //TODO Converting JS TO XFDL
-                outputs=convertJSToXDFL(formdata,laydata, scode,strdata,sComLay);
+                tmpoutputs=convertJSToXDFL(formdata,laydata, scode,strdata,sComLay,binddata);
+                
+                outputs = filterDetail(metadata.get(0).ucomps, tmpoutputs);
 
                 //파일쓰기
                 File file = new File(outPath+fileNicname+".xfdl");
@@ -80,7 +82,42 @@ public class convertJS {
     {
         System.out.println(str);
     }
-    private static List<String> convertJSToXDFL(String fd, String ld,String sc, String ds, String scl) throws IOException{
+    private static List<String> filterDetail(List<UComp> comp, List<String> lines )
+    {
+    	List<String> divName = new ArrayList<String>();
+    	List<String> results =new ArrayList<String>();
+    	
+    	for(UComp vo: comp)
+    	{
+    		if("Div".equals(vo.getType()))
+    		{
+    			String name =vo.getId().substring(1,vo.getId().lastIndexOf('"')); 
+    			divName.add(name.concat("detail"));
+    			System.out.println(name.concat("detail"));
+    		}
+    	}
+ 
+    	for(String co : divName)
+    	{
+    		
+    		for(int i =0;i<lines.size();i++)
+        	{
+        		if(lines.get(i).indexOf(co)>=0 /*&& lines.get(i).trim().length()==co.trim().length()*/)
+        		{
+        			String tmp = lines.get(i).replace(co, "");
+        			lines.remove(i);
+        			lines.add(i, tmp);
+        			//System.out.println(lines.get(i)+"의 line크기: "+lines.get(i).trim().length()+", co크기: "+co.trim().length());
+        			//lines.remove(i);
+        		}
+        			
+        	}
+    	}
+    	
+    		
+    	return results=lines;
+    }
+    private static List<String> convertJSToXDFL(String fd, String ld,String sc, String ds, String scl,String bd) throws IOException{
         List<String> results =new ArrayList<String>();
 
 
@@ -119,7 +156,11 @@ public class convertJS {
                     results.remove(i);
                     results.add(i,scl);
                 }
-
+                if(results.get(i).indexOf("{binds}")>=0)
+                {
+                    results.remove(i);
+                    results.add(i,bd);
+                }
             }
         }
         catch(Exception e)
@@ -137,8 +178,21 @@ public class convertJS {
         {
             str+= data.get(i)+'\n';
         }
+        
+        
+        return  str;
+        
+       
+    }
+    public static String makeStr5(List<BindItem> data)
+    {
+        String str="";
+        for(BindItem vo: data)
+        	str+="<Binditem id="+DDaom(vo.id)+" compid="+DDaom(vo.compid)+" propid="+DDaom(vo.propid)+" datasetid="+DDaom(vo.datasetid)+" columnid="+ DDaom(vo.columnid)+"/>\n";
+        
         return  str;
     }
+    
     public static String DDaom(String value)
     {
         String str="";
@@ -146,13 +200,13 @@ public class convertJS {
         {
             value=value.substring(1,value.length()-1);
         }
-        //System.out.println(value);
+
         str+='"'+value+'"';
         return str;
     }
     public static  String makeStr4(List<String> depth, List<String> comp,List<UComp> ucomp) {
         List<String> dep = new ArrayList<String>();
-
+        List<String> divname = new ArrayList<String>();
         String str = "";
         depth.remove(0);
         for (int i=0;i< depth.size();i++)
@@ -171,6 +225,7 @@ public class convertJS {
         {
             if(ucomp.get(i).getType().equals("Div"))
             {
+            	//divname.add(ucomp.get(i).getId().substring(1,ucomp.get(i).getId().lastIndexOf('"')));
                 if(ucomp.get(i).getParents().equals("this"))
                 {
                     str+=comp.get(i)+"\n";
@@ -204,7 +259,7 @@ public class convertJS {
                     }
 
                 } else if (ucomp.get(i).getType().trim().equals("Tabpage")) {
-                    //System.out.println(ucomp.get(i).getType()+"...."+ucomp.get(i).parents);
+
                     if (str.indexOf(ucomp.get(i).parents + "detail") >= 0) {
                         str = str.replace(ucomp.get(i).parents + "detail", comp.get(i) + ucomp.get(i).parents + "detail");
                     }
@@ -215,7 +270,7 @@ public class convertJS {
                 }
             }
         }
-
+        
         return str;
     }
     public static  List<String> makeStr3(List<Form> data, List<EventInfo> data1)
@@ -258,27 +313,35 @@ public class convertJS {
             str+="<"+data.get(i).getType()+" id ="+DDaom(data.get(i).getId());
             if(!"Tabpage".equals(data.get(i).getType()))
             {
-                if(data.get(i).getLeft()!=null && !data.get(i).getLeft().equals(""))
-                    str+=" left="+DDaom(data.get(i).getLeft());
-                if(data.get(i).getBottom()!=null&& !data.get(i).getBottom().equals(""))
-                    str+=" bottom="+DDaom(data.get(i).getBottom());
-                if(data.get(i).getTop()!=null&& data.get(i).getTop().length()!=0)
-                    str+=" top="+DDaom(data.get(i).getTop());
-                if(data.get(i).getRight()!=null&& !data.get(i).getRight().equals(""))
-                    str+=" right="+DDaom(data.get(i).getRight());
-                if(data.get(i).getHeight()!=null&& !data.get(i).getHeight().equals(""))
-                    str+=" height="+DDaom(data.get(i).getHeight());
-                if(data.get(i).getMaxheight()!=null&& !data.get(i).getMaxheight().equals(""))
-                    str+=" maxheight="+DDaom(data.get(i).getMaxheight());
-                if(data.get(i).getMinheight()!=null&& !data.get(i).getMinheight().equals(""))
-                    str+=" minheight="+DDaom(data.get(i).getMinheight());
-                if(data.get(i).getWidth()!=null&& !data.get(i).getWidth().equals(""))
-                    str+=" width="+DDaom(data.get(i).getWidth());
-                if(data.get(i).getMaxwidth()!=null&& !data.get(i).getMaxwidth().equals(""))
-                    str+=" maxwidth="+DDaom(data.get(i).getMaxwidth());
-                if(data.get(i).getMinwidth()!=null&& !data.get(i).getMinwidth().equals(""))
-                    str+=" minwidth="+DDaom(data.get(i).getMinwidth());
+            	if("BindItem".equals(data.get(i).getType()))
+                {
+                	str+=" compid="+DDaom(data.get(i).getLeft())+" propid="+DDaom(data.get(i).getTop())+" datasetid="+DDaom(data.get(i).getHeight())+" columnid="+ DDaom(data.get(i).getWidth());
+                }
+            	else
+            	{
+	                if(data.get(i).getLeft()!=null && !data.get(i).getLeft().equals(""))
+	                    str+=" left="+DDaom(data.get(i).getLeft());
+	                if(data.get(i).getBottom()!=null&& !data.get(i).getBottom().equals(""))
+	                    str+=" bottom="+DDaom(data.get(i).getBottom());
+	                if(data.get(i).getTop()!=null&& data.get(i).getTop().length()!=0)
+	                    str+=" top="+DDaom(data.get(i).getTop());
+	                if(data.get(i).getRight()!=null&& !data.get(i).getRight().equals(""))
+	                    str+=" right="+DDaom(data.get(i).getRight());
+	                if(data.get(i).getHeight()!=null&& !data.get(i).getHeight().equals(""))
+	                    str+=" height="+DDaom(data.get(i).getHeight());
+	                if(data.get(i).getMaxheight()!=null&& !data.get(i).getMaxheight().equals(""))
+	                    str+=" maxheight="+DDaom(data.get(i).getMaxheight());
+	                if(data.get(i).getMinheight()!=null&& !data.get(i).getMinheight().equals(""))
+	                    str+=" minheight="+DDaom(data.get(i).getMinheight());
+	                if(data.get(i).getWidth()!=null&& !data.get(i).getWidth().equals(""))
+	                    str+=" width="+DDaom(data.get(i).getWidth());
+	                if(data.get(i).getMaxwidth()!=null&& !data.get(i).getMaxwidth().equals(""))
+	                    str+=" maxwidth="+DDaom(data.get(i).getMaxwidth());
+	                if(data.get(i).getMinwidth()!=null&& !data.get(i).getMinwidth().equals(""))
+	                    str+=" minwidth="+DDaom(data.get(i).getMinwidth());
+            	}
             }
+            
             
             if(data.get(i).getInfo()!=null&& !data.get(i).getInfo().equals(""))
             {
@@ -297,13 +360,9 @@ public class convertJS {
                 		
                 		tmpInfo = data.get(i).getInfo().substring(0,data.get(i).getInfo().indexOf("Contents"));
                 		rDataset = data.get(i).getInfo().substring(data.get(i).getInfo().indexOf("Contents")+10,data.get(i).getInfo().lastIndexOf("</Rows>")+"</Rows>".length());
-                		System.out.println(data.get(i).getId()+"["+data.get(i).getParents()+"]");
-                		System.out.println(tmpInfo);
-                		System.out.println(rDataset);
+                		rDataset="<Dataset id="+'"'+"innerdataset"+'"'+">\n"+rDataset+"\n</Dataset>";
                 	}else {
                 		tmpInfo= data.get(i).getInfo();
-                		System.out.println(data.get(i).getId()+"["+data.get(i).getParents()+"]");
-                		System.out.println(tmpInfo);
                 	}
                 }
                 else
@@ -327,9 +386,9 @@ public class convertJS {
                 }
                 else if(data.get(i).getType().trim().equals("Radio"))
                 {
-                	if(rDataset.length()==0) str += "/>\n";
+                	if(rDataset.trim().length()==0) str += "/>\n";
                 	else
-                		str+="\n"+rDataset+"\n</Radio>\n";
+                		str+=">\n"+rDataset+"\n</Radio>\n";
                 }
                 else {
                     if (data.get(i).getType().trim().equals("Grid")) {
@@ -360,12 +419,11 @@ public class convertJS {
                 String name="", event="", info="",colinfo="";
 
 
-                //System.out.println(data.size());
                 for(int i=0;i<data.size();i++)
                 {
                     name = data.get(i).name;
                     info = data.get(i).info;
-                    colinfo = data.get(i).colInfo;
+                    colinfo = data.get(i).colInfo.substring(1,data.get(i).colInfo.lastIndexOf('"'));
                     String tempdata="<Dataset id = "+'"'+name+'"'+" "+info+" "+event+"> \n" +colinfo+" \n</Dataset>";
                     str+=tempdata.replace("\\","");
                     str+="\n";
@@ -398,7 +456,7 @@ public class convertJS {
                 eventname=data.get(i).substring(data.get(i).indexOf(",this.")+6,data.get(i).lastIndexOf(','));
                 if("this".equals(compname))
                     compname= eventname.substring(0,eventname.lastIndexOf('_'));
-                //System.out.println(compname+", "+eventname+", "+eventtype);
+                
                 eventInfoList.add(new EventInfo(compname,eventtype,eventname));
             }
 
@@ -411,7 +469,7 @@ public class convertJS {
         List<Metadata> md = new ArrayList<Metadata>();
         List<Form> formList=new ArrayList<Form>();
         List<Dataset> datasetList = new ArrayList<Dataset>();
-        //List<Comp> compList=new ArrayList<Comp>();
+        List<BindItem> bindList=new ArrayList<BindItem>();
         List<UComp> uCompList = new ArrayList<UComp>();
         List<String> sourcecode = new ArrayList<String>();
         List<EventInfo> eventInfoList = new ArrayList<EventInfo>();
@@ -434,7 +492,6 @@ public class convertJS {
                 {
                     int idx=1;
 
-                    //System.out.println("j:"+j);
                     if(j==data.size()||data.get(j).indexOf("Object(Dataset, ExcelExportObject) Initialize")>=0) break;
 
                     if(data.get(j).indexOf("set_name")>=0)
@@ -447,7 +504,6 @@ public class convertJS {
                         String key,value;
                         key = data.get(j).substring(data.get(j).indexOf("set_")+4,data.get(j).indexOf('('));
                         value=data.get(j).substring(data.get(j).indexOf('(')+1,data.get(j).indexOf(')'));
-                        //System.out.println(key+" "+value);
                         fInfo+=" "+key+"="+value;
                     }
                     else if(data.get(j).indexOf("_setFormPosition")>=0)
@@ -510,7 +566,7 @@ public class convertJS {
                     name = data.get(i).substring(data.get(i).indexOf('"')+1,data.get(i).lastIndexOf('"'));
                     
                     datasetList.add(new Dataset(name, colinfo,info));
-                    //System.out.println(name+" : "+info);
+
                 }else if(data.get(i).indexOf("registerScript")>=0)
                 {
                     break;
@@ -631,7 +687,7 @@ public class convertJS {
                             }
                             if(!parents.equals("this"))
                                 parents = parents.substring(parents.lastIndexOf(",")+1, parents.length());
-                            //System.out.println(name+"--"+parents);
+
                             break;
                         }
                     }
@@ -647,9 +703,12 @@ public class convertJS {
                     		break;
                     	}
                     }
-                    
-                    uCompList.add(new UComp(compname,oParam[0],oParam[1],oParam[2],oParam[3],oParam[4],oParam[5],oParam[6],oParam[7]
+                    if(!"BindItem".equals(compname))
+                    	uCompList.add(new UComp(compname,oParam[0],oParam[1],oParam[2],oParam[3],oParam[4],oParam[5],oParam[6],oParam[7]
                                                     ,oParam[8],oParam[9],oParam[10],info,parents));
+                    else {
+                    	bindList.add(new BindItem(oParam[0],oParam[1],oParam[2],oParam[3],oParam[4]));
+                    }
                 }else
                     continue;
 
@@ -659,7 +718,7 @@ public class convertJS {
 
         }
 
-        md.add(new Metadata(formList,datasetList,uCompList,eventInfoList,sourcecode,compDepth));
+        md.add(new Metadata(formList,datasetList,uCompList,eventInfoList,sourcecode,compDepth,bindList));
 
     return  md;
 
@@ -676,12 +735,23 @@ public class convertJS {
             if(flag)
             {
                 sc.add(data.get(i));
-                //System.out.println(data.get(i));
+                
             }
             if(data.get(i).indexOf("registerScript")>=0) {
                 flag=true;
                 continue;
             }
+        }
+        
+        for(int i=sc.size()-1;i>=0;i--)
+        {
+        	
+        	if( sc.get(i).indexOf("});")>=0)
+        	{	
+        		sc.remove(i);
+        		break;
+        	}else
+        		sc.remove(i);
         }
         return sc;
     }
